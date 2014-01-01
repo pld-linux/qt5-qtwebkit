@@ -16,6 +16,8 @@ BuildRequires:	qt5-qtdeclarative-devel = %{version}
 BuildRequires:	qt5-qtsensors-devel = %{version}
 BuildRequires:	qt5-qttools-devel = %{version}
 BuildRequires:	rpmbuild(macros) >= 1.654
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautoreqdep	libGL.so.1 libGLU.so.1
@@ -38,6 +40,9 @@ Qt5 Webkit - development files.
 %package doc
 Summary:	The Qt5 Webkit - docs
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description doc
 Qt5 Webkit - documentation.
@@ -45,6 +50,9 @@ Qt5 Webkit - documentation.
 %package examples
 Summary:	Qt5 Webkit examples
 Group:		X11/Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description examples
 Qt5 Webkit - examples.
