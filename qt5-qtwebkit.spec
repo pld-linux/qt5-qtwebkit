@@ -1,14 +1,20 @@
 # TODO:
-# - package /usr/lib/qt5/libexec correctly
 # - cleanup
+# - opencl support (BR: OpenCL-devel, enable_opencl?) ?
+# - seccomp (SECCOMP_FILTERS) support (BR: libseccomp-devel)?
+# - system leveldb (requires memenv helper library)
+# NOTE: not splitting WebKit/WebKitWidgets, interdependencies are not clear
+# (e.g. WebProcess requires WebKitWidgets)
 #
 # Conditional build:
 %bcond_without	qch	# documentation in QCH format
 
-%define		orgname		qtwebkit
-%define		qtbase_ver	%{version}
-%define		qtquick_ver	%{version}
-%define		qttools_ver	%{version}
+%define		orgname			qtwebkit
+%define		qtbase_ver		%{version}
+%define		qtdeclarative_ver	%{version}
+%define		qtmultimedia_ver	%{version}
+%define		qtsensors_ver		%{version}
+%define		qttools_ver		%{version}
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
@@ -19,8 +25,30 @@ Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	cc9197eaef9e7950e907635f9bde1e98
 URL:		http://qt-project.org/
-BuildRequires:	Qt5Core-devel = %{qtbase_ver}
-BuildRequires:	Qt5Quick-devel = %{qtquick_ver}
+BuildRequires:	OpenGL-devel
+BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
+BuildRequires:	Qt5Gui-devel >= %{qtbase_ver}
+# multimediawidgets ?
+#BuildRequires:	Qt5Multimedia-devel >= %{qtmultimedia_ver}
+BuildRequires:	Qt5Network-devel >= %{qtbase_ver}
+BuildRequires:	Qt5OpenGL-devel >= %{qtbase_ver}
+BuildRequires:	Qt5PrintSupport-devel >= %{qtbase_ver}
+BuildRequires:	Qt5Qml-devel >= %{qtdeclarative_ver}
+BuildRequires:	Qt5Quick-devel >= %{qtdeclarative_ver}
+# +positioning ?
+#BuildRequires:	Qt5Sensors-devel >= %{qtsensors_ver}
+BuildRequires:	Qt5Sql-devel >= %{qtbase_ver}
+BuildRequires:	Qt5Widgets-devel >= %{qtbase_ver}
+BuildRequires:	glib2-devel >= 2.0
+BuildRequires:	gstreamer-devel >= 1.0
+BuildRequires:	gstreamer-plugins-base-devel >= 1.0
+BuildRequires:	libicu-devel
+BuildRequires:	libjpeg-devel
+BuildRequires:	libpng-devel
+BuildRequires:	libwebp-devel
+BuildRequires:	libxml2-devel >= 2.0
+BuildRequires:	libxslt-devel
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.654
 %if %{with qch}
 BuildRequires:	qt5-assistant >= %{qttools_ver}
@@ -28,8 +56,13 @@ BuildRequires:	qt5-assistant >= %{qttools_ver}
 BuildRequires:	qt5-build >= %{qtbase_ver}
 BuildRequires:	qt5-qmake >= %{qtbase_ver}
 BuildRequires:	rpmbuild(macros) >= 1.654
+BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	tar >= 1:1.22
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXcomposite-devel
+BuildRequires:	xorg-lib-libXrender-devel
 BuildRequires:	xz
+BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags	-fno-strict-aliasing
@@ -54,18 +87,36 @@ Ten pakiet zawiera biblioteki Qt5 WebKit.
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Group:		X11/Libraries
+Requires:	Qt5Core >= %{qtbase_ver}
+Requires:	Qt5Gui >= %{qtbase_ver}
+Requires:	Qt5Network >= %{qtbase_ver}
+Requires:	Qt5OpenGL >= %{qtbase_ver}
+Requires:	Qt5PrintSupport >= %{qtbase_ver}
+Requires:	Qt5Qml >= %{qtdeclarative_ver}
+Requires:	Qt5Quick >= %{qtdeclarative_ver}
+Requires:	Qt5Sql >= %{qtbase_ver}
+Requires:	Qt5Widgets >= %{qtbase_ver}
 
 %description -n Qt5WebKit
-Qt5 WebKit libraries ... TODO.
+Qt5 WebKit libraries provide a web browser engine as well as C++
+classes to render and interact with web content.
 
 %description -n Qt5WebKit -l pl.UTF-8
-Biblioteki Qt5 WebKit ... TODO
+Biblioteki Qt5 WebKit dostarczają silnik przeglądarki WWW, a także
+klasy C++ do renderowania i interakcji z treścią WWW.
 
 %package -n Qt5WebKit-devel
 Summary:	Qt5 WebKit libraries - development files
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit - pliki programistyczne
 Group:		X11/Development/Libraries
+Requires:	Qt5Core-devel >= %{qtbase_ver}
+Requires:	Qt5Gui-devel >= %{qtbase_ver}
+Requires:	Qt5Network-devel >= %{qtbase_ver}
+Requires:	Qt5OpenGL-devel >= %{qtbase_ver}
+Requires:	Qt5PrintSupport-devel >= %{qtbase_ver}
+Requires:	Qt5Quick-devel >= %{qtbase_ver}
 Requires:	Qt5WebKit = %{version}-%{release}
+Requires:	Qt5Widgets-devel >= %{qtbase_ver}
 
 %description -n Qt5WebKit-devel
 Qt5 WebKit libraries - development files.
@@ -108,6 +159,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 
 %build
 qmake-qt5
+
 %{__make}
 %{__make} %{!?with_qch:html_}docs
 
@@ -119,6 +171,12 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install_%{!?with_qch:html_}docs \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
+# kill unnecessary -L%{_libdir} from *.la, *.prl, *.pc
+%{__sed} -i -e "s,-L%{_libdir} \?,,g" \
+	$RPM_BUILD_ROOT%{_libdir}/*.{la,prl} \
+	$RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
+# kill unwanted Libs.private (containing many bogus entries) from *.pc files
+%{__sed} -i -e '/^Libs\.private/d' $RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
 # useless symlinks
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.so.5.?
 # actually drop *.la, follow policy of not packaging them when *.pc exist
@@ -142,7 +200,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/qt5/qml/QtWebKit/experimental
 %attr(755,root,root) %{_libdir}/qt5/qml/QtWebKit/experimental/libqmlwebkitexperimentalplugin.so
 %{_libdir}/qt5/qml/QtWebKit/experimental/qmldir
-%attr(755,root,root) %{_libdir}/qt5/libexec
+%dir %{_libdir}/qt5/libexec
+%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebPluginProcess
+%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebProcess
 
 %files -n Qt5WebKit-devel
 %defattr(644,root,root,755)
@@ -156,14 +216,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/Qt5WebKitWidgets.pc
 %{_libdir}/cmake/Qt5WebKit
 %{_libdir}/cmake/Qt5WebKitWidgets
-%{qt5dir}/mkspecs/modules/*.pri
+%{qt5dir}/mkspecs/modules/qt_lib_webkit.pri
+%{qt5dir}/mkspecs/modules/qt_lib_webkit_private.pri
+%{qt5dir}/mkspecs/modules/qt_lib_webkitwidgets.pri
+%{qt5dir}/mkspecs/modules/qt_lib_webkitwidgets_private.pri
 
 %files doc
 %defattr(644,root,root,755)
-%{_docdir}/qt5-doc/qt*[!h]
+%{_docdir}/qt5-doc/qtwebkit
 
 %if %{with qch}
 %files doc-qch
 %defattr(644,root,root,755)
-%{_docdir}/qt5-doc/*.qch
+%{_docdir}/qt5-doc/qtwebkit.qch
 %endif
