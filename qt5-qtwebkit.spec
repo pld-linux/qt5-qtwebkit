@@ -1,17 +1,19 @@
 # TODO:
 # - cleanup
-# - opencl support (BR: OpenCL-devel, enable_opencl?) ?
-# - seccomp (SECCOMP_FILTERS) support (BR: libseccomp-devel)?
+# - opencl support (BR: OpenCL-devel, WEBKIT_CONFIG+=opencl) ?
+# - seccomp support (BR: libseccomp-devel, WEBKIT_CONFIG+=seccomp_filters) ?
 # - system leveldb (requires memenv helper library)
 # NOTE: not splitting WebKit/WebKitWidgets, interdependencies are not clear
 # (e.g. WebProcess requires WebKitWidgets)
 #
 # Conditional build:
-%bcond_without	qch	# documentation in QCH format
+%bcond_without	qch		# documentation in QCH format
+%bcond_with	qtmultimedia	# QtMultimedia support
 
 %define		orgname			qtwebkit
 %define		qtbase_ver		%{version}
 %define		qtdeclarative_ver	%{version}
+%define		qtlocation_ver		%{version}
 %define		qtmultimedia_ver	%{version}
 %define		qtsensors_ver		%{version}
 %define		qttools_ver		%{version}
@@ -19,8 +21,8 @@ Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
 Version:	5.3.0
-Release:	0.2
-License:	LGPL v2.1 or GPL v3.0
+Release:	1
+License:	LGPL v2+
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	cc9197eaef9e7950e907635f9bde1e98
@@ -28,15 +30,14 @@ URL:		http://qt-project.org/
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Gui-devel >= %{qtbase_ver}
-# multimediawidgets ?
-#BuildRequires:	Qt5Multimedia-devel >= %{qtmultimedia_ver}
+%{?with_qtmultimedia:BuildRequires:	Qt5MultimediaWidgets-devel >= %{qtmultimedia_ver}}
 BuildRequires:	Qt5Network-devel >= %{qtbase_ver}
 BuildRequires:	Qt5OpenGL-devel >= %{qtbase_ver}
+BuildRequires:	Qt5Positioning-devel >= %{qtlocation_ver}
 BuildRequires:	Qt5PrintSupport-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Qml-devel >= %{qtdeclarative_ver}
 BuildRequires:	Qt5Quick-devel >= %{qtdeclarative_ver}
-# +positioning ?
-#BuildRequires:	Qt5Sensors-devel >= %{qtsensors_ver}
+BuildRequires:	Qt5Sensors-devel >= %{qtsensors_ver}
 BuildRequires:	Qt5Sql-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Widgets-devel >= %{qtbase_ver}
 BuildRequires:	glib2-devel >= 2.0
@@ -89,11 +90,14 @@ Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Group:		X11/Libraries
 Requires:	Qt5Core >= %{qtbase_ver}
 Requires:	Qt5Gui >= %{qtbase_ver}
+%{?with_qtmultimedia:Requires:	Qt5MultimediaWidgets >= %{qtmultimedia_ver}}
 Requires:	Qt5Network >= %{qtbase_ver}
 Requires:	Qt5OpenGL >= %{qtbase_ver}
+Requires:	Qt5Positioning >= %{qtlocation_ver}
 Requires:	Qt5PrintSupport >= %{qtbase_ver}
 Requires:	Qt5Qml >= %{qtdeclarative_ver}
 Requires:	Qt5Quick >= %{qtdeclarative_ver}
+Requires:	Qt5Sensors >= %{qtsensors_ver}
 Requires:	Qt5Sql >= %{qtbase_ver}
 Requires:	Qt5Widgets >= %{qtbase_ver}
 
@@ -111,10 +115,13 @@ Summary(pl.UTF-8):	Biblioteki Qt5 WebKit - pliki programistyczne
 Group:		X11/Development/Libraries
 Requires:	Qt5Core-devel >= %{qtbase_ver}
 Requires:	Qt5Gui-devel >= %{qtbase_ver}
+%{?with_qtmultimedia:Requires:	Qt5MultimediaWidgets-devel >= %{qtmultimedia_ver}}
 Requires:	Qt5Network-devel >= %{qtbase_ver}
 Requires:	Qt5OpenGL-devel >= %{qtbase_ver}
+Requires:	Qt5Positioning-devel >= %{qtlocation_ver}
 Requires:	Qt5PrintSupport-devel >= %{qtbase_ver}
 Requires:	Qt5Quick-devel >= %{qtbase_ver}
+Requires:	Qt5Sensors-devel >= %{qtsensors_ver}
 Requires:	Qt5WebKit = %{version}-%{release}
 Requires:	Qt5Widgets-devel >= %{qtbase_ver}
 
@@ -158,7 +165,8 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %setup -q -n %{orgname}-opensource-src-%{version}
 
 %build
-qmake-qt5
+qmake-qt5 \
+	%{?with_qtmultimedia:WEBKIT_CONFIG+=use_qtmultimedia}
 
 %{__make}
 %{__make} %{!?with_qch:html_}docs
