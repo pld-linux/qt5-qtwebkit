@@ -1,5 +1,4 @@
 # TODO:
-# - cleanup
 # - opencl support (BR: OpenCL-devel, WEBKIT_CONFIG+=opencl) ?
 # - seccomp support (BR: libseccomp-devel, WEBKIT_CONFIG+=seccomp_filters) ?
 # - system leveldb (requires memenv helper library)
@@ -20,12 +19,12 @@
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
-Version:	5.3.0
+Version:	5.3.1
 Release:	1
 License:	LGPL v2+
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	cc9197eaef9e7950e907635f9bde1e98
+# Source0-md5:	0f2bb8af6be2306b2b4d194a7ebf6fcc
 URL:		http://qt-project.org/
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
@@ -204,6 +203,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libQt5WebKitWidgets.so.5
 %dir %{_libdir}/qt5/qml/QtWebKit
 %attr(755,root,root) %{_libdir}/qt5/qml/QtWebKit/libqmlwebkitplugin.so
+%{_libdir}/qt5/qml/QtWebKit/plugins.qmltypes
 %{_libdir}/qt5/qml/QtWebKit/qmldir
 %dir %{_libdir}/qt5/qml/QtWebKit/experimental
 %attr(755,root,root) %{_libdir}/qt5/qml/QtWebKit/experimental/libqmlwebkitexperimentalplugin.so
