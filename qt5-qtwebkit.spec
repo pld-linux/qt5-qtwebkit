@@ -19,12 +19,12 @@
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
-Version:	5.3.1
+Version:	5.3.2
 Release:	1
 License:	LGPL v2+
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	0f2bb8af6be2306b2b4d194a7ebf6fcc
+# Source0-md5:	0497b5b46540848e0db6a9e219d756fb
 URL:		http://qt-project.org/
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
