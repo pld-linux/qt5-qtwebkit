@@ -25,6 +25,7 @@ License:	LGPL v2+
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	186627b1ea5b614811fbd0cfa9b4d073
+Patch0:		x32-asm.patch
 URL:		http://qt-project.org/
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
@@ -162,6 +163,9 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version}
+%ifarch x32
+%patch0 -p1
+%endif
 
 %build
 qmake-qt5 \
