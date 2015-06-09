@@ -6,8 +6,15 @@
 # (e.g. WebProcess requires WebKitWidgets)
 #
 # Conditional build:
+%bcond_with	bootstrap	# disable features to able to build without installed qt5
+# -- build targets
 %bcond_without	qch		# documentation in QCH format
+# -- features
 %bcond_with	qtmultimedia	# QtMultimedia support
+
+%if %{with bootstrap}
+%undefine	with_qch
+%endif
 
 %define		orgname			qtwebkit
 %define		qtbase_ver		%{version}
@@ -20,7 +27,7 @@ Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
 Version:	5.4.1
-Release:	1
+Release:	1.1
 License:	LGPL v2+
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
