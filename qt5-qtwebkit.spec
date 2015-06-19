@@ -22,7 +22,7 @@
 %define		qtlocation_ver		%{version}
 %define		qtmultimedia_ver	%{version}
 %define		qtsensors_ver		%{version}
-%define		qttools_ver		%{version}
+%define		qttools_ver		5.4
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
