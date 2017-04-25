@@ -33,6 +33,7 @@ Group:		X11/Libraries
 Source0:	http://download.qt.io/official_releases/qt/5.5/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	681328edb539b8fa3a273b38c90b3e31
 Patch0:		icu59.patch
+Patch1:		new-char-types.patch
 URL:		http://www.qt.io/
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
@@ -171,6 +172,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 qmake-qt5 \
