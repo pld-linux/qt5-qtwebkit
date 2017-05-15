@@ -72,6 +72,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 BuildRequires:	xorg-lib-libXrender-devel
 BuildRequires:	xz
 BuildRequires:	zlib-devel
+BuildConflicts:	leveldb-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags	-fno-strict-aliasing
@@ -220,7 +221,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/qt5/qml/QtWebKit/experimental/libqmlwebkitexperimentalplugin.so
 %{_libdir}/qt5/qml/QtWebKit/experimental/qmldir
 %dir %{_libdir}/qt5/libexec
-%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebPluginProcess
 %attr(755,root,root) %{_libdir}/qt5/libexec/QtWebProcess
 
 %files -n Qt5WebKit-devel
