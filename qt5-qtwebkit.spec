@@ -26,12 +26,12 @@
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
-Version:	5.5.1
-Release:	7
+Version:	5.8.0
+Release:	0.1
 License:	LGPL v2+
 Group:		X11/Libraries
-Source0:	http://download.qt.io/official_releases/qt/5.5/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	681328edb539b8fa3a273b38c90b3e31
+Source0:	http://download.qt.io/community_releases/5.8/%{version}-final/%{orgname}-opensource-src-%{version}.tar.xz
+# Source0-md5:	60a6935aca4a7c553d0ec4646ceed3b4
 Patch0:		icu59.patch
 Patch1:		new-char-types.patch
 URL:		http://www.qt.io/
