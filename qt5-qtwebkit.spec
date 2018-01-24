@@ -49,6 +49,7 @@ BuildRequires:	Qt5Sensors-devel >= %{qtsensors_ver}
 BuildRequires:	Qt5Sql-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Widgets-devel >= %{qtbase_ver}
 BuildRequires:	glib2-devel >= 2.0
+BuildRequires:	gperf
 BuildRequires:	gstreamer-devel >= 1.0
 BuildRequires:	gstreamer-plugins-base-devel >= 1.0
 BuildRequires:	libicu-devel
