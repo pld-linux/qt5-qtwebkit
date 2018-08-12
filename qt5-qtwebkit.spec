@@ -4,11 +4,12 @@
 # - system leveldb (requires memenv helper library)
 # NOTE: not splitting WebKit/WebKitWidgets, interdependencies are not clear
 # (e.g. WebProcess requires WebKitWidgets)
+# - switch to building using cmake directly, reenable doc
 #
 # Conditional build:
 %bcond_with	bootstrap	# disable features to able to build without installed qt5
 # -- build targets
-%bcond_without	doc		# Documentation
+%bcond_with	doc		# Documentation
 # -- features
 %bcond_with	qtmultimedia	# QtMultimedia support
 
@@ -16,25 +17,34 @@
 %undefine	with_doc
 %endif
 
+%define		snap	alpha2
+
 %define		orgname			qtwebkit
-%define		qtbase_ver		%{version}
-%define		qtdeclarative_ver	%{version}
-%define		qtlocation_ver		%{version}
-%define		qtmultimedia_ver	%{version}
-%define		qtsensors_ver		%{version}
-%define		qttools_ver		5.4
+%define		qtbase_ver		5.11
+%define		qtdeclarative_ver	5.11
+%define		qtlocation_ver		5.11
+%define		qtmultimedia_ver	5.11
+%define		qtsensors_ver		5.11
+%define		qttools_ver		5.11
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
-Version:	5.8.0
-Release:	1
+Version:	5.212.0
+Release:	0.%{snap}.1
 License:	LGPL v2+
 Group:		X11/Libraries
-Source0:	http://download.qt.io/community_releases/5.8/%{version}-final/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	60a6935aca4a7c553d0ec4646ceed3b4
-Patch0:		icu59.patch
-Patch1:		new-char-types.patch
-URL:		http://www.qt.io/
+Source0:	https://github.com/annulen/webkit/archive/qtwebkit-%{version}-%{snap}.tar.gz
+# Source0-md5:	9216661f6626fe4224ac477adf8d4162
+# from FC
+Patch100:	qt5-qtwebkit-5.212.0-alpha2-fix-pagewidth.patch
+Patch101:	qtwebkit-5.212.0-alpha2-fix-null-pointer-dereference.patch
+Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
+Patch103:	qtwebkit-5.212.0_fix_missing_sources.patch
+Patch104:	0016-cmake-Import-ECMEnableSanitizers.patch
+Patch105:	0031-Disable-ES6-Proxy-object.patch
+Patch106:	0111-ECM-Update-ECMGeneratePkgConfigFile-to-latest-versio.patch
+Patch107:	0012-cmake-Fix-include-dir-in-the-generated-pkg-config-fi.patch
+URL:		https://github.com/annulen/webkit
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Gui-devel >= %{qtbase_ver}
@@ -172,9 +182,15 @@ Qt5 WebKit documentation in QCH format.
 Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 
 %prep
-%setup -q -n %{orgname}-opensource-src-%{version}
-%patch0 -p1
-%patch1 -p1
+%setup -q -n webkit-qtwebkit-%{version}-%{snap}
+%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%patch104 -p1
+%patch105 -p1
+%patch106 -p1
+%patch107 -p1
 
 %build
 qmake-qt5 \
@@ -193,16 +209,11 @@ rm -rf $RPM_BUILD_ROOT
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 %endif
 
-# kill unnecessary -L%{_libdir} from *.la, *.prl, *.pc
+# kill unnecessary -L%{_libdir} from *.pc
 %{__sed} -i -e "s,-L%{_libdir} \?,,g" \
-	$RPM_BUILD_ROOT%{_libdir}/*.{la,prl} \
 	$RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
 # kill unwanted Libs.private (containing many bogus entries) from *.pc files
 %{__sed} -i -e '/^Libs\.private/d' $RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
-# useless symlinks
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.so.5.?
-# actually drop *.la, follow policy of not packaging them when *.pc exist
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -225,13 +236,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/qt5/qml/QtWebKit/experimental/qmldir
 %dir %{_libdir}/qt5/libexec
 %attr(755,root,root) %{_libdir}/qt5/libexec/QtWebProcess
+%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebDatabaseProcess
+%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebNetworkProcess
 
 %files -n Qt5WebKit-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5WebKit.so
 %attr(755,root,root) %{_libdir}/libQt5WebKitWidgets.so
-%{_libdir}/libQt5WebKit.prl
-%{_libdir}/libQt5WebKitWidgets.prl
 %{_includedir}/qt5/QtWebKit
 %{_includedir}/qt5/QtWebKitWidgets
 %{_pkgconfigdir}/Qt5WebKit.pc
@@ -239,9 +250,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5WebKit
 %{_libdir}/cmake/Qt5WebKitWidgets
 %{qt5dir}/mkspecs/modules/qt_lib_webkit.pri
-%{qt5dir}/mkspecs/modules/qt_lib_webkit_private.pri
 %{qt5dir}/mkspecs/modules/qt_lib_webkitwidgets.pri
-%{qt5dir}/mkspecs/modules/qt_lib_webkitwidgets_private.pri
 
 %if %{with doc}
 %files doc
