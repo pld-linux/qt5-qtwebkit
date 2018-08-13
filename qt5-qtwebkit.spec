@@ -193,6 +193,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %patch107 -p1
 
 %build
+CXXFLAGS="%{rpmcxxflags} -fpermissive"; export CXXFLAGS
 qmake-qt5 \
 	%{?with_qtmultimedia:WEBKIT_CONFIG+=use_qtmultimedia}
 
