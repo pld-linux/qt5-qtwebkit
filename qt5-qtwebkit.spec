@@ -36,7 +36,7 @@ Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
 Version:	5.212.0
-Release:	0.%{snap}.1
+Release:	0.%{snap}.2
 License:	LGPL v2+
 Group:		X11/Libraries
 Source0:	https://github.com/annulen/webkit/archive/qtwebkit-%{version}-%{snap}.tar.gz
