@@ -17,6 +17,12 @@
 %undefine	with_doc
 %endif
 
+# it's not possible to build this with debuginfo on 32bit archs due to
+# memory constraints during linking
+%ifarch %{ix86} x32
+%define		_enable_debug_packages		0
+%endif
+
 %define		snap	alpha2
 
 %define		orgname			qtwebkit
