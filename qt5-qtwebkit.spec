@@ -50,6 +50,7 @@ Patch104:	0016-cmake-Import-ECMEnableSanitizers.patch
 Patch105:	0031-Disable-ES6-Proxy-object.patch
 Patch106:	0111-ECM-Update-ECMGeneratePkgConfigFile-to-latest-versio.patch
 Patch107:	0012-cmake-Fix-include-dir-in-the-generated-pkg-config-fi.patch
+Patch108:	x32.patch
 URL:		https://github.com/annulen/webkit
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
@@ -198,6 +199,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %patch105 -p1
 %patch106 -p1
 %patch107 -p1
+%patch108 -p1
 
 %build
 CXXFLAGS="%{rpmcxxflags} -fpermissive"; export CXXFLAGS

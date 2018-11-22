@@ -1,0 +1,15 @@
+--- webkit-qtwebkit-5.212.0-alpha2/Source/JavaScriptCore/assembler/MacroAssembler.h.orig	2018-11-22 19:45:23.473588054 +0100
++++ webkit-qtwebkit-5.212.0-alpha2/Source/JavaScriptCore/assembler/MacroAssembler.h	2018-11-22 19:45:05.290379269 +0100
+@@ -1152,10 +1152,12 @@
+         case 0xffff:
+         case 0xffffff:
+         case 0xffffffffL:
++#ifndef __ILP32__
+         case 0xffffffffffL:
+         case 0xffffffffffffL:
+         case 0xffffffffffffffL:
+         case 0xffffffffffffffffL:
++#endif
+             return false;
+         default: {
+             if (value <= 0xff)
