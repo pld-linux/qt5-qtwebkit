@@ -64,6 +64,7 @@ BuildRequires:	Qt5Quick-devel >= %{qtdeclarative_ver}
 BuildRequires:	Qt5Sensors-devel >= %{qtsensors_ver}
 BuildRequires:	Qt5Sql-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Widgets-devel >= %{qtbase_ver}
+BuildRequires:	Qt5WebChannel-devel >= %{qtbase_ver}
 BuildRequires:	glib2-devel >= 2.0
 BuildRequires:	gperf
 BuildRequires:	gstreamer-devel >= 1.0
