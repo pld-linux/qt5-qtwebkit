@@ -202,21 +202,45 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %patch108 -p1
 
 %build
+mkdir -p build
+cd build
+CFLAGS="%{rpmcflags}"; export CFLAGS
 CXXFLAGS="%{rpmcxxflags} -fpermissive"; export CXXFLAGS
-qmake-qt5 \
-	%{?with_qtmultimedia:WEBKIT_CONFIG+=use_qtmultimedia}
+# We cannot use default cmake macro here as it overwrites some settings queried
+# by qtwebkit cmake from qmake
+cmake \
+	-DPORT=Qt \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DENABLE_TOOLS=OFF \
+	-DCMAKE_C_FLAGS_RELEASE:STRING="-DNDEBUG" \
+	-DCMAKE_CXX_FLAGS_RELEASE:STRING="-DNDEBUG" \
+	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+	%{?with_qtmultimedia:-DUSE_QT_MULTIMEDIA:BOOL=ON} \
+	%{?with_doc:-DGENERATE_DOCUMENTATION=ON} \
+%if "%{_lib}" == "lib64"
+	-DLIB_SUFFIX=64 \
+%endif
+%if "%{_lib}" == "libx32"
+	-DLIB_SUFFIX=x32 \
+%endif
+%ifarch x32
+	-DENABLE_JIT=OFF \
+%endif
+       ..
 
 %{__make}
 %{?with_doc:%{__make} docs}
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+cd build
 %{__make} install \
-	INSTALL_ROOT=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with doc}
 %{__make} install_docs \
-	INSTALL_ROOT=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT
 %endif
 
 # kill unnecessary -L%{_libdir} from *.pc
