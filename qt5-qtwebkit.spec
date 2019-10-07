@@ -23,8 +23,8 @@
 %define		_enable_debug_packages		0
 %endif
 
-%define		snap	alpha2
-%define		rel	5
+%define		snap	alpha3
+%define		rel	1
 
 %define		orgname			qtwebkit
 %define		qtbase_ver		5.11
@@ -40,17 +40,10 @@ Version:	5.212.0
 Release:	0.%{snap}.%{rel}
 License:	LGPL v2+
 Group:		X11/Libraries
-Source0:	https://github.com/annulen/webkit/archive/qtwebkit-%{version}-%{snap}.tar.gz
-# Source0-md5:	9216661f6626fe4224ac477adf8d4162
+Source0:	https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-%{version}-%{snap}/qtwebkit-%{version}-%{snap}.tar.xz
+# Source0-md5:	5e7ade75ad0df9047826e625e4f262fc
 # from FC
-Patch100:	qt5-qtwebkit-5.212.0-alpha2-fix-pagewidth.patch
-Patch101:	qtwebkit-5.212.0-alpha2-fix-null-pointer-dereference.patch
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
-Patch103:	qtwebkit-5.212.0_fix_missing_sources.patch
-Patch104:	0016-cmake-Import-ECMEnableSanitizers.patch
-Patch105:	0031-Disable-ES6-Proxy-object.patch
-Patch106:	0111-ECM-Update-ECMGeneratePkgConfigFile-to-latest-versio.patch
-Patch107:	0012-cmake-Fix-include-dir-in-the-generated-pkg-config-fi.patch
 Patch108:	x32.patch
 URL:		https://github.com/annulen/webkit
 BuildRequires:	OpenGL-devel
@@ -191,15 +184,8 @@ Qt5 WebKit documentation in QCH format.
 Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 
 %prep
-%setup -q -n webkit-qtwebkit-%{version}-%{snap}
-%patch100 -p1
-%patch101 -p1
+%setup -q -n qtwebkit-%{version}-%{snap}
 %patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch107 -p1
 %patch108 -p1
 
 %build
@@ -271,8 +257,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/qt5/qml/QtWebKit/experimental/qmldir
 %dir %{_libdir}/qt5/libexec
 %attr(755,root,root) %{_libdir}/qt5/libexec/QtWebProcess
-%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebDatabaseProcess
 %attr(755,root,root) %{_libdir}/qt5/libexec/QtWebNetworkProcess
+%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebPluginProcess
+%attr(755,root,root) %{_libdir}/qt5/libexec/QtWebStorageProcess
 
 %files -n Qt5WebKit-devel
 %defattr(644,root,root,755)
@@ -285,7 +272,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5WebKit
 %{_libdir}/cmake/Qt5WebKitWidgets
 %{qt5dir}/mkspecs/modules/qt_lib_webkit.pri
+%{qt5dir}/mkspecs/modules/qt_lib_webkit_private.pri
 %{qt5dir}/mkspecs/modules/qt_lib_webkitwidgets.pri
+%{qt5dir}/mkspecs/modules/qt_lib_webkitwidgets_private.pri
 
 %if %{with doc}
 %files doc
