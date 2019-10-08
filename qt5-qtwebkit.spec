@@ -42,6 +42,7 @@ License:	LGPL v2+
 Group:		X11/Libraries
 Source0:	https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-%{version}-%{snap}/qtwebkit-%{version}-%{snap}.tar.xz
 # Source0-md5:	5e7ade75ad0df9047826e625e4f262fc
+Patch0:		icu65.patch
 # from FC
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
 Patch108:	x32.patch
@@ -185,6 +186,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 
 %prep
 %setup -q -n qtwebkit-%{version}-%{snap}
+%patch0 -p0
 %patch102 -p1
 %patch108 -p1
 
