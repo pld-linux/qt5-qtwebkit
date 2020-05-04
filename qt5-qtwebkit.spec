@@ -259,7 +259,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/qt5/qml/QtWebKit/experimental
 %attr(755,root,root) %{_libdir}/qt5/qml/QtWebKit/experimental/libqmlwebkitexperimentalplugin.so
 %{_libdir}/qt5/qml/QtWebKit/experimental/qmldir
-%dir %{_libdir}/qt5/libexec
 %attr(755,root,root) %{_libdir}/qt5/libexec/QtWebProcess
 %attr(755,root,root) %{_libdir}/qt5/libexec/QtWebNetworkProcess
 %attr(755,root,root) %{_libdir}/qt5/libexec/QtWebPluginProcess
