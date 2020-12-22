@@ -6,7 +6,7 @@
 # -- build targets
 %bcond_with	doc		# Documentation
 # -- features
-%bcond_without	qtmultimedia	# QtMultimedia support
+%bcond_with	qtmultimedia	# QtMultimedia support (instead of GStreamer)
 %bcond_without	seccomp		# WebProcess seccomp filters
 
 %if %{with bootstrap}
@@ -208,7 +208,7 @@ cmake \
 	-DCMAKE_C_FLAGS_RELEASE:STRING="-DNDEBUG" \
 	-DCMAKE_CXX_FLAGS_RELEASE:STRING="-DNDEBUG" \
 	-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
-	%{?with_qtmultimedia:-DUSE_QT_MULTIMEDIA:BOOL=ON} \
+	%{?with_qtmultimedia:-DUSE_GSTREAMER:BOOL=OFF -DUSE_QT_MULTIMEDIA:BOOL=ON} \
 	%{?with_doc:-DGENERATE_DOCUMENTATION=ON} \
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64 \
