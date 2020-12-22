@@ -1,0 +1,19 @@
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/css/makegrammar.pl.orig	2020-03-04 18:16:37.000000000 +0100
++++ qtwebkit-5.212.0-alpha4/Source/WebCore/css/makegrammar.pl	2020-12-21 12:42:44.729244719 +0100
+@@ -92,6 +92,16 @@
+ print HEADER "#endif\n";
+ close HEADER;
+ 
++rename "$fileBase.cpp", "$fileBase.cpp.in" or die;
++open CPPIN, "<$fileBase.cpp.in" or die;
++open CPPOUT, ">$fileBase.cpp" or die;
++while (<CPPIN>) {
++    s/"${filename}\.(cpp\.h|hpp)"/"${filename}.h"/;
++    print CPPOUT;
++}
++close CPPIN;
++close CPPOUT;
++
+ unlink("$fileBase.cpp.h");
+ unlink("$fileBase.hpp");
+ 

@@ -1,17 +1,13 @@
-# TODO:
-# - opencl support (BR: OpenCL-devel, WEBKIT_CONFIG+=opencl) ?
-# - seccomp support (BR: libseccomp-devel, WEBKIT_CONFIG+=seccomp_filters) ?
-# - system leveldb (requires memenv helper library)
 # NOTE: not splitting WebKit/WebKitWidgets, interdependencies are not clear
 # (e.g. WebProcess requires WebKitWidgets)
-# - switch to building using cmake directly, reenable doc
 #
 # Conditional build:
 %bcond_with	bootstrap	# disable features to able to build without installed qt5
 # -- build targets
 %bcond_with	doc		# Documentation
 # -- features
-%bcond_with	qtmultimedia	# QtMultimedia support
+%bcond_without	qtmultimedia	# QtMultimedia support
+%bcond_without	seccomp		# WebProcess seccomp filters
 
 %if %{with bootstrap}
 %undefine	with_doc
@@ -23,8 +19,8 @@
 %define		_enable_debug_packages		0
 %endif
 
-%define		snap	alpha3
-%define		rel	3
+%define		snap	alpha4
+%define		rel	1
 
 %define		orgname			qtwebkit
 %define		qtbase_ver		5.11
@@ -33,6 +29,7 @@
 %define		qtmultimedia_ver	5.11
 %define		qtsensors_ver		5.11
 %define		qttools_ver		5.11
+%define		qtwebchannel_ver	5.11
 Summary:	The Qt5 WebKit libraries
 Summary(pl.UTF-8):	Biblioteki Qt5 WebKit
 Name:		qt5-%{orgname}
@@ -40,9 +37,10 @@ Version:	5.212.0
 Release:	0.%{snap}.%{rel}
 License:	LGPL v2+
 Group:		X11/Libraries
+#Source0Download: https://github.com/qtwebkit/qtwebkit/releases
 Source0:	https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-%{version}-%{snap}/qtwebkit-%{version}-%{snap}.tar.xz
-# Source0-md5:	5e7ade75ad0df9047826e625e4f262fc
-Patch0:		icu65.patch
+# Source0-md5:	5b61a72497f06e51db09d57edc3c35fb
+Patch0:		%{name}-css.patch
 # from FC
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
 Patch108:	x32.patch
@@ -58,35 +56,42 @@ BuildRequires:	Qt5PrintSupport-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Qml-devel >= %{qtdeclarative_ver}
 BuildRequires:	Qt5Quick-devel >= %{qtdeclarative_ver}
 BuildRequires:	Qt5Sensors-devel >= %{qtsensors_ver}
-BuildRequires:	Qt5Sql-devel >= %{qtbase_ver}
+BuildRequires:	Qt5WebChannel-devel >= %{qtwebchannel_ver}
 BuildRequires:	Qt5Widgets-devel >= %{qtbase_ver}
-BuildRequires:	Qt5WebChannel-devel >= %{qtbase_ver}
-BuildRequires:	glib2-devel >= 2.0
-BuildRequires:	gperf
-BuildRequires:	gstreamer-devel >= 1.0
-BuildRequires:	gstreamer-plugins-base-devel >= 1.0
+BuildRequires:	bison >= 2.1
+BuildRequires:	dwz >= 0.13
+BuildRequires:	glib2-devel >= 1:2.36
+BuildRequires:	gperf >= 3.0.1
+BuildRequires:	gstreamer-devel >= 1.0.3
+BuildRequires:	gstreamer-gl-devel >= 1.6.0
+BuildRequires:	gstreamer-plugins-bad-devel >= 1.4.0
+BuildRequires:	gstreamer-plugins-base-devel >= 1.0.3
+BuildRequires:	hyphen-devel
 BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
+%{?with_seccomp:BuildRequires:	libseccomp-devel}
 BuildRequires:	libwebp-devel
-BuildRequires:	libxml2-devel >= 2.0
-BuildRequires:	libxslt-devel
+BuildRequires:	libxml2-devel >= 1:2.8.0
+BuildRequires:	libxslt-devel >= 1.1.7
+BuildRequires:	perl-base >= 1:5.10.0
 BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.654
+BuildRequires:	python >= 1:2.7.0
+BuildRequires:	ruby >= 1:1.9
 %if %{with doc}
 BuildRequires:	qt5-assistant >= %{qttools_ver}
 %endif
 BuildRequires:	qt5-build >= %{qtbase_ver}
 BuildRequires:	qt5-qmake >= %{qtbase_ver}
-BuildRequires:	rpmbuild(macros) >= 1.654
+BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	tar >= 1:1.22
+BuildRequires:	woff2-devel >= 1.0.1
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXcomposite-devel
 BuildRequires:	xorg-lib-libXrender-devel
 BuildRequires:	xz
 BuildRequires:	zlib-devel
-BuildConflicts:	leveldb-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags	-fno-strict-aliasing
@@ -159,9 +164,7 @@ Summary:	Qt5 WebKit documentation in HTML format
 Summary(pl.UTF-8):	Dokumentacja do bibliotek Qt5 WebKit w formacie HTML
 Group:		Documentation
 Requires:	qt5-doc-common >= %{qtbase_ver}
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description doc
 Qt5 WebKit documentation in HTML format.
@@ -174,9 +177,7 @@ Summary:	Qt5 WebKit documentation in QCH format
 Summary(pl.UTF-8):	Dokumentacja do bibliotek Qt5 WebKit w formacie QCH
 Group:		Documentation
 Requires:	qt5-doc-common >= %{qtbase_ver}
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description doc-qch
 Qt5 WebKit documentation in QCH format.
@@ -186,7 +187,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 
 %prep
 %setup -q -n qtwebkit-%{version}-%{snap}
-%patch0 -p0
+%patch0 -p1
 %patch102 -p1
 %patch108 -p1
 
@@ -201,6 +202,7 @@ cmake \
 	-DPORT=Qt \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DENABLE_NETSCAPE_PLUGIN_API=ON \
+	%{?with_seccomp:-DENABLE_SECCOMP_FILTERS=ON} \
 	-DENABLE_TOOLS=OFF \
 	-DENABLE_X11_TARGET=ON \
 	-DCMAKE_C_FLAGS_RELEASE:STRING="-DNDEBUG" \
@@ -220,25 +222,31 @@ cmake \
        ..
 
 %{__make}
-%{?with_doc:%{__make} docs}
+
+%if %{with doc}
+%{__make} docs \
+	BUILDDIR=$(pwd) \
+	QT_INSTALL_DOCS=%{_docdir}/qt5-doc \
+	QT_VERSION=%{version} \
+	QT_VERSION_TAG="%(echo %{version} | tr -d .)" \
+	QT_VER="%(rpm -q qt5-build --qf '%{V}' | cut -d. -f1-2)"
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-cd build
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+%{__make} -C build install \
+	DESTDIR=$RPM_BUILD_ROOT \
+	BUILDDIR=$(pwd) \
+	QT_INSTALL_DOCS=%{_docdir}/qt5-doc \
+	QT_VERSION=%{version} \
+	QT_VERSION_TAG="%(echo %{version} | tr -d .)" \
+	QT_VER="%(rpm -q qt5-build --qf '%{V}' | cut -d. -f1-2)"
 
-%if %{with doc}
-%{__make} install_docs \
-	DESTDIR=$RPM_BUILD_ROOT
-%endif
-
-# kill unnecessary -L%{_libdir} from *.pc
-%{__sed} -i -e "s,-L%{_libdir} \?,,g" \
+# normalize paths
+%{__sed} -i -e '/^Libs:/ s,-L/[^ ]*,-L%{_libdir},' \
+	-e '/^Cflags:/ s,-I[^ ]*/include/qt5,-I%{_includedir}/qt5,' \
 	$RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
-# kill unwanted Libs.private (containing many bogus entries) from *.pc files
-%{__sed} -i -e '/^Libs\.private/d' $RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
