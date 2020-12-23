@@ -1,5 +1,5 @@
---- ../BUILD/qtwebkit-5.212.0-alpha4/Source/PlatformQt.cmake.orig	2020-03-04 18:16:37.000000000 +0100
-+++ ../BUILD/qtwebkit-5.212.0-alpha4/Source/PlatformQt.cmake	2020-12-23 20:33:52.256635105 +0100
+--- qtwebkit-5.212.0-alpha4/Source/PlatformQt.cmake.orig	2020-03-04 18:16:37.000000000 +0100
++++ qtwebkit-5.212.0-alpha4/Source/PlatformQt.cmake	2020-12-23 20:33:52.256635105 +0100
 @@ -254,22 +254,22 @@
      set(NEED_ALL "")
  endif ()
