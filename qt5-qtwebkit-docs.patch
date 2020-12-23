@@ -1,0 +1,34 @@
+--- ../BUILD/qtwebkit-5.212.0-alpha4/Source/PlatformQt.cmake.orig	2020-03-04 18:16:37.000000000 +0100
++++ ../BUILD/qtwebkit-5.212.0-alpha4/Source/PlatformQt.cmake	2020-12-23 20:33:52.256635105 +0100
+@@ -254,22 +254,22 @@
+     set(NEED_ALL "")
+ endif ()
+ 
+-set(EXPORT_VARS_COMMANDS
+-    COMMAND ${EXPORT_VAR} "QT_INSTALL_DOCS=${QT_INSTALL_DOCS}"
+-    COMMAND ${EXPORT_VAR} "QT_VER=${PROJECT_VERSION_STRING}"
+-    COMMAND ${EXPORT_VAR} "QT_VERSION=${PROJECT_VERSION_STRING}"
+-    COMMAND ${EXPORT_VAR} "QT_VERSION_TAG=${PROJECT_VERSION_TAG}"
++set(EXPORT_VARS
++    "QT_INSTALL_DOCS=${QT_INSTALL_DOCS}"
++    "QT_VER=${PROJECT_VERSION_STRING}"
++    "QT_VERSION=${PROJECT_VERSION_STRING}"
++    "QT_VERSION_TAG=${PROJECT_VERSION_TAG}"
++    "BUILDDIR=${CMAKE_BINARY_DIR}"
+ )
++get_target_property(QDOC Qt5::qdoc IMPORTED_LOCATION)
+ 
+ add_custom_target(prepare_docs ${NEED_ALL}
+-    ${EXPORT_VARS_COMMANDS}
+-    COMMAND Qt5::qdoc ${QDOC_CONFIG} -prepare -outputdir "${DOC_OUTPUT_DIR}/qtwebkit" -installdir ${DOC_INSTALL_DIR} -indexdir ${QT_INSTALL_DOCS} -no-link-errors
++    COMMAND ${CMAKE_COMMAND} -E env ${EXPORT_VARS} ${QDOC} ${QDOC_CONFIG} -prepare -outputdir "${DOC_OUTPUT_DIR}/qtwebkit" -installdir ${DOC_INSTALL_DIR} -indexdir ${QT_INSTALL_DOCS} -no-link-errors
+     VERBATIM
+ )
+ 
+ add_custom_target(generate_docs ${NEED_ALL}
+-    ${EXPORT_VARS_COMMANDS}
+-    COMMAND Qt5::qdoc ${QDOC_CONFIG} -generate -outputdir "${DOC_OUTPUT_DIR}/qtwebkit" -installdir ${DOC_INSTALL_DIR} -indexdir ${QT_INSTALL_DOCS}
++    COMMAND ${CMAKE_COMMAND} -E env ${EXPORT_VARS} ${QDOC} ${QDOC_CONFIG} -generate -outputdir "${DOC_OUTPUT_DIR}/qtwebkit" -installdir ${DOC_INSTALL_DIR} -indexdir ${QT_INSTALL_DOCS}
+     VERBATIM
+ )
+ add_dependencies(generate_docs prepare_docs)
