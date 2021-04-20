@@ -84,6 +84,7 @@ BuildRequires:	qt5-assistant >= %{qttools_ver}
 %endif
 BuildRequires:	qt5-build >= %{qtbase_ver}
 BuildRequires:	qt5-qmake >= %{qtbase_ver}
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	tar >= 1:1.22
@@ -149,7 +150,7 @@ Requires:	Qt5Network-devel >= %{qtbase_ver}
 Requires:	Qt5OpenGL-devel >= %{qtbase_ver}
 Requires:	Qt5Positioning-devel >= %{qtlocation_ver}
 Requires:	Qt5PrintSupport-devel >= %{qtbase_ver}
-Requires:	Qt5Quick-devel >= %{qtbase_ver}
+Requires:	Qt5Quick-devel >= %{qtdeclarative_ver}
 Requires:	Qt5Sensors-devel >= %{qtsensors_ver}
 Requires:	Qt5WebKit = %{version}-%{release}
 Requires:	Qt5Widgets-devel >= %{qtbase_ver}
