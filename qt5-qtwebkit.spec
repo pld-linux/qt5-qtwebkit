@@ -96,7 +96,7 @@ BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		specflags	-fno-strict-aliasing
+%define		specflags	-fno-strict-aliasing -DU_DEFINE_FALSE_AND_TRUE=1
 %define		qt5dir		%{_libdir}/qt5
 
 %description
