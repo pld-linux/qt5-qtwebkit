@@ -42,6 +42,7 @@ Source0:	https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-%{versi
 # Source0-md5:	5b61a72497f06e51db09d57edc3c35fb
 Patch0:		%{name}-css.patch
 Patch1:		%{name}-docs.patch
+Patch2:		glib2.68.patch
 # from FC
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
 Patch108:	x32.patch
@@ -191,6 +192,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %setup -q -n qtwebkit-%{version}-%{snap}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %patch102 -p1
 %patch108 -p1
 
