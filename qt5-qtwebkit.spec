@@ -43,6 +43,7 @@ Source0:	https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-%{versi
 Patch0:		%{name}-css.patch
 Patch1:		%{name}-docs.patch
 Patch2:		glib2.68.patch
+Patch3:		%{name}-gstreamer.patch
 # from FC
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
 Patch108:	x32.patch
@@ -193,6 +194,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch102 -p1
 %patch108 -p1
 

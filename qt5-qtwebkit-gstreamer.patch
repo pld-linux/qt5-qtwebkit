@@ -1,0 +1,11 @@
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/platform/audio/gstreamer/AudioFileReaderGStreamer.cpp.orig	2020-03-04 18:16:37.000000000 +0100
++++ qtwebkit-5.212.0-alpha4/Source/WebCore/platform/audio/gstreamer/AudioFileReaderGStreamer.cpp	2022-06-28 19:21:04.705394935 +0200
+@@ -230,7 +230,7 @@ void AudioFileReader::handleNewDeinterle
+         [](GstAppSink* sink, gpointer userData) -> GstFlowReturn {
+             return static_cast<AudioFileReader*>(userData)->handleSample(sink);
+         },
+-        { nullptr }
++        nullptr // new_event
+     };
+     gst_app_sink_set_callbacks(GST_APP_SINK(sink), &callbacks, this, 0);
+ 
