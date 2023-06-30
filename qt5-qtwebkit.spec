@@ -44,6 +44,7 @@ Patch0:		%{name}-css.patch
 Patch1:		%{name}-docs.patch
 Patch2:		glib2.68.patch
 Patch3:		%{name}-gstreamer.patch
+Patch4:		gcc13.patch
 # from FC
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
 Patch108:	x32.patch
@@ -195,6 +196,7 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 %patch102 -p1
 %patch108 -p1
 
