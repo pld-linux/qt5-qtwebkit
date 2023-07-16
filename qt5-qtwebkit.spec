@@ -70,7 +70,6 @@ BuildRequires:	glib2-devel >= 1:2.36
 BuildRequires:	gperf >= 3.0.1
 BuildRequires:	gstreamer-devel >= 1.0.3
 BuildRequires:	gstreamer-gl-devel >= 1.6.0
-#BuildRequires:	gstreamer-plugins-bad-devel >= 1.4.0
 BuildRequires:	gstreamer-plugins-base-devel >= 1.0.3
 BuildRequires:	hyphen-devel
 BuildRequires:	libicu-devel
