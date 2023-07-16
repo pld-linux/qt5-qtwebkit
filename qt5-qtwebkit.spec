@@ -45,6 +45,8 @@ Patch1:		%{name}-docs.patch
 Patch2:		glib2.68.patch
 Patch3:		%{name}-gstreamer.patch
 Patch4:		gcc13.patch
+Patch5:		python3.patch
+Patch6:		python3.9.patch
 # from FC
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
 Patch108:	x32.patch
@@ -68,7 +70,7 @@ BuildRequires:	glib2-devel >= 1:2.36
 BuildRequires:	gperf >= 3.0.1
 BuildRequires:	gstreamer-devel >= 1.0.3
 BuildRequires:	gstreamer-gl-devel >= 1.6.0
-BuildRequires:	gstreamer-plugins-bad-devel >= 1.4.0
+#BuildRequires:	gstreamer-plugins-bad-devel >= 1.4.0
 BuildRequires:	gstreamer-plugins-base-devel >= 1.0.3
 BuildRequires:	hyphen-devel
 BuildRequires:	libicu-devel
@@ -80,7 +82,7 @@ BuildRequires:	libxml2-devel >= 1:2.8.0
 BuildRequires:	libxslt-devel >= 1.1.7
 BuildRequires:	perl-base >= 1:5.10.0
 BuildRequires:	pkgconfig
-BuildRequires:	python >= 1:2.7.0
+BuildRequires:	python3 >= 1:3.2
 BuildRequires:	ruby >= 1:1.9
 %if %{with doc}
 BuildRequires:	qt5-assistant >= %{qttools_ver}
@@ -197,6 +199,8 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
+%patch6 -p1
 %patch102 -p1
 %patch108 -p1
 
