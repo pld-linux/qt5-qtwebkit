@@ -1,0 +1,44 @@
+--- qtwebkit-5.212.0-alpha4/Source/cmake/OptionsCommon.cmake.orig	2025-01-18 16:47:37.062008124 +0100
++++ qtwebkit-5.212.0-alpha4/Source/cmake/OptionsCommon.cmake	2025-01-18 18:27:44.526259025 +0100
+@@ -31,7 +31,7 @@
+ if (COMPILER_IS_GCC_OR_CLANG)
+     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-exceptions -fno-strict-aliasing")
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-strict-aliasing -fno-rtti")
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
++    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+ endif ()
+ 
+ if (COMPILER_IS_CLANG AND CMAKE_GENERATOR STREQUAL "Ninja")
+--- qtwebkit-5.212.0-alpha4/Source/WTF/wtf/StdLibExtras.h.orig	2020-03-04 18:16:37.000000000 +0100
++++ qtwebkit-5.212.0-alpha4/Source/WTF/wtf/StdLibExtras.h	2025-01-18 12:20:42.206600856 +0100
+@@ -292,7 +292,7 @@
+ // This adds various C++14 features for versions of the STL that may not yet have them.
+ namespace std {
+ // MSVC 2013 supports std::make_unique already.
+-#if !defined(_MSC_VER) || _MSC_VER < 1800
++#if __cplusplus < 201402L
+ template<class T> struct _Unique_if {
+     typedef unique_ptr<T> _Single_object;
+ };
+@@ -323,7 +323,7 @@
+ #endif
+ 
+ // MSVC 2015 supports these functions.
+-#if !COMPILER(MSVC) || _MSC_VER < 1900
++#if __cplusplus < 201402L
+ // Compile-time integer sequences
+ // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3658.html
+ // (Note that we only implement index_sequence, and not the more generic integer_sequence).
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/page/csp/ContentSecurityPolicy.cpp.orig	2025-01-18 18:23:46.724912441 +0100
++++ qtwebkit-5.212.0-alpha4/Source/WebCore/page/csp/ContentSecurityPolicy.cpp	2025-01-18 18:24:49.828602836 +0100
+@@ -232,8 +232,9 @@
+         auto cryptoDigest = CryptoDigest::create(toCryptoDigestAlgorithm(algorithm));
+         cryptoDigest->addBytes(contentCString.data(), contentCString.length());
+         Vector<uint8_t> digest = cryptoDigest->computeHash();
++	auto policyHash = std::make_pair(algorithm, digest);
+         for (auto& policy : policies) {
+-            if ((policy.get()->*allowed)(std::make_pair(algorithm, digest)))
++            if ((policy.get()->*allowed)(policyHash))
+                 return true;
+         }
+     }

@@ -47,6 +47,7 @@ Patch3:		%{name}-gstreamer.patch
 Patch4:		gcc13.patch
 Patch5:		python3.patch
 Patch6:		python3.9.patch
+Patch7:		c++17.patch
 # from FC
 Patch102:	qtwebkit-5.212.0_cmake_cmp0071.patch
 Patch108:	x32.patch
@@ -193,15 +194,16 @@ Dokumentacja do bibliotek Qt5 WebKit w formacie QCH.
 
 %prep
 %setup -q -n qtwebkit-%{version}-%{snap}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch102 -p1
-%patch108 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
+%patch -P 4 -p1
+%patch -P 5 -p1
+%patch -P 6 -p1
+%patch -P 7 -p1
+%patch -P 102 -p1
+%patch -P 108 -p1
 
 %build
 mkdir -p build
@@ -231,7 +233,7 @@ cmake \
 %ifarch x32
 	-DENABLE_JIT=OFF \
 %endif
-       ..
+	..
 
 %{__make}
 
