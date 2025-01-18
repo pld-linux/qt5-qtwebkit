@@ -20,7 +20,7 @@
 %endif
 
 %define		snap	alpha4
-%define		rel	8
+%define		rel	8.1
 
 %define		orgname			qtwebkit
 %define		qtbase_ver		5.11
