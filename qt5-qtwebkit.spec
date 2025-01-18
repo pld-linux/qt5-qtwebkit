@@ -77,6 +77,7 @@ BuildRequires:	libicu-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 %{?with_seccomp:BuildRequires:	libseccomp-devel}
+BuildRequires:	libstdc++-devel >= 6:8
 BuildRequires:	libwebp-devel
 BuildRequires:	libxml2-devel >= 1:2.8.0
 BuildRequires:	libxslt-devel >= 1.1.7
