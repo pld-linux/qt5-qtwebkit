@@ -55,7 +55,6 @@ URL:		https://github.com/annulen/webkit
 BuildRequires:	OpenGL-devel
 BuildRequires:	Qt5Core-devel >= %{qtbase_ver}
 BuildRequires:	Qt5Gui-devel >= %{qtbase_ver}
-BuildRequires:	Qt5Gui-platform-vnc >= %{qtbase_ver}
 %{?with_qtmultimedia:BuildRequires:	Qt5MultimediaWidgets-devel >= %{qtmultimedia_ver}}
 BuildRequires:	Qt5Network-devel >= %{qtbase_ver}
 BuildRequires:	Qt5OpenGL-devel >= %{qtbase_ver}
